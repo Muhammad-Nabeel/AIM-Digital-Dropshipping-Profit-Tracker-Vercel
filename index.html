@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f5f1ea" />
+  <title>AIM Digital UK — Dropshipping Profit Tracker</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="AIM Digital UK dashboard">
+      <span class="brand-mark" aria-hidden="true"><span></span></span>
+      <span><strong>AIM DIGITAL UK</strong><small>Aim. Build. Arrive.</small></span>
+    </a>
+    <div class="top-actions">
+      <span class="private-pill"><span class="lock-dot"></span>Private workspace</span>
+      <button class="btn btn-ghost" id="downloadTemplateBtn">Download template</button>
+      <button class="btn btn-secondary" id="importBtn">Import Excel / CSV</button>
+      <button class="btn btn-primary" id="addBtn"><span>＋</span> Add product</button>
+    </div>
+  </header>
+
+  <main>
+    <nav class="app-switcher" aria-label="Dashboard views">
+      <button class="app-view-btn active" data-app-view="tracker" aria-current="page"><span>Profit tracker</span><small>Compare margins</small></button>
+      <button class="app-view-btn" data-app-view="trends"><span>eBay trends</span><small>Find product ideas</small></button>
+      <button class="app-view-btn" data-app-view="q4"><span>Q4 sourcing</span><small>AliExpress → private label</small></button>
+    </nav>
+
+    <div id="trackerView">
+    <section class="hero">
+      <div>
+        <p class="eyebrow">PRODUCT RESEARCH CONTROL ROOM</p>
+        <h1>Dropshipping profit tracker</h1>
+        <p class="hero-copy">Compare landed cost, demand, competition and IP risk before a product reaches your eBay store.</p>
+      </div>
+      <div class="storage-note" title="Your research stays in this browser unless you export it.">
+        <span class="storage-icon">✓</span>
+        <div><strong>Saved in this browser</strong><small>Private by default · Export anytime</small></div>
+      </div>
+    </section>
+
+    <section class="metrics" aria-label="Portfolio summary">
+      <article class="metric-card"><span>Products tracked</span><strong id="metricProducts">0</strong><small id="metricShortlisted">0 shortlisted</small></article>
+      <article class="metric-card"><span>Average margin</span><strong id="metricMargin">0.0%</strong><small id="metricMarginHint">Across current view</small></article>
+      <article class="metric-card profit-card"><span>Est. profit per order</span><strong id="metricProfit">—</strong><small id="metricProfitHint">Choose a market to total currency</small></article>
+      <article class="metric-card"><span>Promising products</span><strong id="metricPromising">0</strong><small>Margin ≥25% · Low IP risk</small></article>
+    </section>
+
+    <section class="workspace">
+      <aside class="filters" id="filtersPanel">
+        <div class="filter-heading"><div><p class="eyebrow">REFINE</p><h2>Filters</h2></div><button class="text-btn" id="clearFiltersBtn">Clear all</button></div>
+        <label class="field"><span>Marketplace</span><select id="marketFilter"><option value="all">US + AU</option><option value="US">eBay US</option><option value="AU">eBay AU</option></select></label>
+        <label class="field"><span>Minimum margin <b id="marginValue">0%</b></span><input id="marginFilter" type="range" min="-50" max="70" step="5" value="-50" /></label>
+        <label class="field"><span>Minimum sold count</span><input id="soldFilter" type="number" min="0" placeholder="Any" /></label>
+        <fieldset class="field chip-field"><legend>Competition</legend><div id="competitionFilter"><button data-value="Low" class="chip active">Low</button><button data-value="Medium" class="chip active">Medium</button><button data-value="High" class="chip active">High</button></div></fieldset>
+        <fieldset class="field chip-field"><legend>IP risk</legend><div id="riskFilter"><button data-value="Low" class="chip active risk-low">Low</button><button data-value="Medium" class="chip active risk-medium">Medium</button><button data-value="High" class="chip active risk-high">High</button></div></fieldset>
+        <div class="rule-card"><span class="rule-icon">✦</span><div><strong>Promising rule</strong><p>Margin ≥25%, at least 10 sold, low IP risk and no high competition.</p></div></div>
+        <button class="btn btn-soft full" id="shortlistPromisingBtn">Shortlist promising results</button>
+      </aside>
+
+      <div class="results-panel">
+        <div class="results-toolbar">
+          <div class="tabs" role="tablist">
+            <button class="tab active" data-view="all">All research <span id="allCount">0</span></button>
+            <button class="tab" data-view="promising">Promising <span id="promisingCount">0</span></button>
+            <button class="tab" data-view="shortlist">Shortlist <span id="shortlistCount">0</span></button>
+          </div>
+          <div class="toolbar-right">
+            <label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="Search products or suppliers" /></label>
+            <button class="icon-btn mobile-filter" id="mobileFilterBtn" aria-label="Show filters">☷</button>
+            <button class="btn btn-ghost compact" id="exportBtn">Export CSV</button>
+          </div>
+        </div>
+        <div class="active-summary" id="activeSummary"><span id="resultCount">0 products</span><span>Click a column heading to sort</span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr>
+              <th class="star-col" aria-label="Shortlist"></th>
+              <th><button data-sort="name">Product <span>↕</span></button></th>
+              <th><button data-sort="marketplace">Market <span>↕</span></button></th>
+              <th><button data-sort="supplierCost">Supplier cost <span>↕</span></button></th>
+              <th><button data-sort="shipping">Shipping <span>↕</span></button></th>
+              <th><button data-sort="marketplacePrice">eBay price <span>↕</span></button></th>
+              <th><button data-sort="ebayFees">eBay fees <span>↕</span></button></th>
+              <th><button data-sort="netProfit">Net profit <span>↕</span></button></th>
+              <th><button data-sort="margin">Margin <span>↕</span></button></th>
+              <th><button data-sort="soldCount">Sold <span>↕</span></button></th>
+              <th><button data-sort="competition">Competition <span>↕</span></button></th>
+              <th><button data-sort="risk">IP risk <span>↕</span></button></th>
+              <th>Links</th><th aria-label="Actions"></th>
+            </tr></thead>
+            <tbody id="productRows"></tbody>
+          </table>
+          <div class="empty-state" id="emptyState" hidden>
+            <span class="empty-icon">↗</span><h3 id="emptyTitle">Start your research shortlist</h3>
+            <p id="emptyCopy">Add a product manually or import an existing Excel or CSV research file.</p>
+            <button class="btn btn-primary" id="emptyAction">Add first product</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    </div>
+
+    <section class="trends-view" id="trendsView" hidden>
+      <div class="trends-hero">
+        <div>
+          <p class="eyebrow">EBAY PRODUCT RADAR · SEPTEMBER 2026</p>
+          <h1>Find the next product to test</h1>
+          <p>Explore generic, sourceable ideas for eBay US and Australia. Open sold listings to verify demand, compare suppliers, then move the idea into your profit tracker.</p>
+        </div>
+        <div class="radar-score"><strong id="trendResultCount">0</strong><span>ideas in view</span><small>Prioritised for timing, IP safety and competition</small></div>
+      </div>
+
+      <div class="trend-controls">
+        <div class="trend-filter-group" aria-label="Trend marketplace">
+          <button class="trend-filter active" data-trend-market="all">US + AU</button>
+          <button class="trend-filter" data-trend-market="US">eBay US</button>
+          <button class="trend-filter" data-trend-market="AU">eBay AU</button>
+        </div>
+        <label class="trend-select"><span>Category</span><select id="trendCategory"><option value="all">All categories</option><option value="Auto">Auto accessories</option><option value="Decals">Decals &amp; signs</option><option value="Home">Home</option><option value="Seasonal">Seasonal</option></select></label>
+        <label class="trend-search"><span aria-hidden="true">⌕</span><input id="trendSearch" type="search" placeholder="Search trend ideas" /></label>
+      </div>
+
+      <div class="trend-insight-strip">
+        <article><span class="insight-icon">↗</span><div><strong>Q4 window is opening</strong><small>Test winter auto and Christmas decal listings before peak demand.</small></div></article>
+        <article><span class="insight-icon">◎</span><div><strong>Generic wins first</strong><small>Prioritise universal products and original wording to keep IP risk low.</small></div></article>
+        <article><span class="insight-icon">✓</span><div><strong>Verify before buying</strong><small>Check sold listings, delivery time and supplier reviews before listing.</small></div></article>
+      </div>
+
+      <div class="trend-grid" id="trendGrid"></div>
+      <div class="trend-empty" id="trendEmpty" hidden><strong>No matching ideas</strong><p>Try another market, category or search term.</p></div>
+      <p class="trend-method">Priority scores are planning signals based on seasonality, competition and IP risk—not live eBay sales data. Always verify current sold listings and supplier availability before listing.</p>
+    </section>
+
+    <section class="q4-view" id="q4View" hidden>
+      <div class="q4-hero"><div><p class="eyebrow">Q4 2026 PERSONALIZED GIFT SHORTLIST</p><h1>Test on AliExpress. Private label the winners.</h1><p>Products selected for holiday gifting, personalization, low IP risk and fit with your existing decal niche.</p></div><div class="q4-target"><span>Target per order</span><strong>$8+ net profit</strong><small>30%+ margin after product, US shipping and eBay fees</small></div></div>
+      <div class="cost-warning"><strong>Actual-cost rule</strong><p>Only a supplier price shown with a confirmed US shipping quote can be treated as landed cost. Rows marked “Live quote needed” are intentionally not given a profit estimate. Open AliExpress, select the exact variant and a US ZIP code, then add the confirmed values to the Profit Tracker.</p></div>
+      <div class="q4-summary"><span><strong id="q4Count">0</strong> products shortlisted</span><span><strong>3</strong> exact AliExpress item links</span><span><strong>2</strong> exact eBay demand examples</span></div>
+      <div class="q4-grid" id="q4Grid"></div>
+      <p class="trend-method">Prices and sold counts are research observations captured for 23 September 2026 and can change. Market-search links are labelled separately from exact competitor listings.</p>
+    </section>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <dialog id="productDialog" class="modal">
+    <form method="dialog" id="productForm">
+      <div class="modal-head"><div><p class="eyebrow">PRODUCT RESEARCH</p><h2 id="productDialogTitle">Add product</h2></div><button class="modal-close" value="cancel" aria-label="Close">×</button></div>
+      <div class="form-grid">
+        <label class="field span-2"><span>Product name *</span><input name="name" required placeholder="e.g. 2-piece car seat gap organiser" /></label>
+        <label class="field"><span>Marketplace *</span><select name="marketplace"><option value="US">eBay US · USD</option><option value="AU">eBay AU · AUD</option></select></label>
+        <label class="field"><span>Supplier *</span><select name="supplier"><option>AliExpress</option><option>Amazon</option><option>CJdropshipping</option><option>Other</option></select></label>
+        <label class="field"><span>Supplier cost *</span><input name="supplierCost" type="number" required min="0" step="0.01" value="0" /></label>
+        <label class="field"><span>Shipping *</span><input name="shipping" type="number" required min="0" step="0.01" value="0" /></label>
+        <label class="field"><span>Marketplace price *</span><input name="marketplacePrice" type="number" required min="0.01" step="0.01" /></label>
+        <label class="field"><span>Sold count</span><input name="soldCount" type="number" min="0" step="1" value="0" /></label>
+        <label class="field"><span>eBay fee %</span><input name="feeRate" type="number" min="0" step="0.01" value="13.25" /></label>
+        <label class="field"><span>Fixed order fee</span><input name="fixedFee" type="number" min="0" step="0.01" value="0.40" /></label>
+        <label class="field"><span>Competition</span><select name="competition"><option>Low</option><option selected>Medium</option><option>High</option></select></label>
+        <label class="field"><span>IP risk</span><select name="risk"><option selected>Low</option><option>Medium</option><option>High</option></select></label>
+        <label class="field span-2"><span>Supplier link</span><input name="supplierLink" type="url" placeholder="https://www.aliexpress.com/item/..." /></label>
+        <label class="field span-2"><span>Exact eBay listing link</span><input name="ebayLink" type="url" placeholder="https://www.ebay.com/itm/..." /></label>
+        <label class="field span-2"><span>Research notes</span><textarea name="notes" rows="2" placeholder="Why this product may be worth testing"></textarea></label>
+      </div>
+      <div class="live-calc"><span>Estimated result</span><div><strong id="formProfit">—</strong><small id="formFormula">Price − product − shipping − eBay fees</small></div><div><strong id="formMargin">—</strong><small>Net margin</small></div></div>
+      <input type="hidden" name="editId" />
+      <div class="modal-actions"><button class="btn btn-ghost" value="cancel">Cancel</button><button class="btn btn-primary" id="saveProductBtn" value="default">Save product</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="importDialog" class="modal import-modal">
+    <div class="modal-head"><div><p class="eyebrow">BULK IMPORT</p><h2>Import product research</h2></div><button class="modal-close" id="closeImportBtn" aria-label="Close">×</button></div>
+    <div class="dropzone" id="dropzone"><input id="fileInput" type="file" accept=".csv,.xlsx,.xls" /><span class="upload-icon">⇧</span><strong>Drop Excel or CSV here</strong><p>or click to choose a file · .xlsx, .xls, .csv</p></div>
+    <div class="import-guidance"><strong>Recognised fields</strong><p>Product, marketplace, supplier, cost, shipping, eBay price, fees, sold count, competition, IP risk and both links. Header variations are matched automatically.</p></div>
+    <div id="importPreview" hidden>
+      <div class="preview-head"><div><strong id="previewTitle">Import preview</strong><p id="previewMeta"></p></div><button class="text-btn" id="chooseAnotherBtn">Choose another file</button></div>
+      <div class="preview-table"><table><thead><tr><th>Status</th><th>Product</th><th>Market</th><th>Cost</th><th>Price</th><th>Margin</th><th>Issues</th></tr></thead><tbody id="previewRows"></tbody></table></div>
+      <div class="modal-actions"><button class="btn btn-ghost" id="cancelImportBtn">Cancel</button><button class="btn btn-primary" id="confirmImportBtn">Import valid rows</button></div>
+    </div>
+  </dialog>
+
+  <script src="./vendor/xlsx.full.min.js"></script>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>
